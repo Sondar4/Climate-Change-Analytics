@@ -50,7 +50,7 @@ This dataset will be the main source for our facts table and hopefully will prov
 
 ### Foreign exchange rates
 
-A dataset generated on the Federal Reserve's Download Data Program, with some changes.
+A dataset generated on the Federal Reserve's Download Data Program, with some changes. This table had to be preprocessed before the copy statement because there isn't a good implementation of unpivot tables in Redshift.
 
 ## Data Warehouse design
 

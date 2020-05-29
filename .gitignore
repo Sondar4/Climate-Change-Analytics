@@ -1,9 +1,10 @@
 .vscode/
 .ipynb_checkpoints
+__pycache__
 
 data/*
 logs/*
 
 # Files
-ToDo.md
+TODO.md
 dwh.cfg

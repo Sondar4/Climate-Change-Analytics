@@ -8,7 +8,7 @@ def load_staging_tables(cur, conn):
     """Load data from the source files on S3 onto the staging tables.
     """
     for query in copy_table_queries:
-        print("- Loading data onto staging table {}".format("<REPLACE>"))
+        print("- Loading data onto staging table {}".format(query.split(" ")[5]))
         cur.execute(query)
         conn.commit()
 

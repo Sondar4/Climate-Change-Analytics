@@ -41,8 +41,8 @@ staging_industrial_production_create = """CREATE TABLE IF NOT EXISTS staging_ind
     value_type text,
     industry_id text,
     industry text,
-    YEAR int,
-    year int,
+    YEAR_1 smallint,
+    year smallint,
     currency_code text,
     currency text,
     power_code_code int,
@@ -51,67 +51,50 @@ staging_industrial_production_create = """CREATE TABLE IF NOT EXISTS staging_ind
     reference_period text,
     value numeric(30, 10),
     flag_codes text,
-    flags text
+    flags VARCHAR(350)
 );"""
 
 staging_currencies_create = """CREATE TABLE IF NOT EXISTS staging_currencies(
-    id int,
     dt date,
-    AUD numeric(20, 10),
-    EUR numeric(20, 10),
-    NZD numeric(20, 10),
-    GBP numeric(20, 10),
-    BRL numeric(20, 10),
-    CAD numeric(20, 10),
-    CNY numeric(20, 10),
-    HKD numeric(20, 10),
-    INR numeric(20, 10),
-    KRW numeric(20, 10),
-    MXN numeric(20, 10),
-    ZAR numeric(20, 10),
-    SGD numeric(20, 10),
-    DKK numeric(20, 10),
-    JPY numeric(20, 10),
-    MYR numeric(20, 10),
-    NOK numeric(20, 10),
-    SEK numeric(20, 10),
-    LKR numeric(20, 10),
-    CHF numeric(20, 10),
-    TWD numeric(20, 10),
-    THB numeric(20, 10)
+    currency_code text,
+    value numeric(20, 10)
 );"""
 
 industrial_production_create = """CREATE TABLE IF NOT EXISTS industrial_production(
-    country_code text,
-    industry_id text,
-    year int,
-    currency_code text,
+    country_code VARCHAR(3),
+    industry_id VARCHAR(15) sortkey,
+    year smallint,
+    currency_code VARCHAR(3),
     value numeric(30, 10),
-
+    PRIMARY KEY (country_code, industry_id, year)
 );"""
 
 countries_create = """CREATE TABLE IF NOT EXISTS countries(
-    country_code text,
-    year int,
-    emissions double precision
+    country_code VARCHAR(3),
+    year smallint,
+    emissions double precision,
+    PRIMARY KEY (country_code, year)
 );"""
 
 temperatures_create = """CREATE TABLE IF NOT EXISTS temperatures(
-    country_code text,
-    dt date,
-    year int,
+    country_code VARCHAR(3) distkey,
+    dt date sortkey,
+    year smallint,
     average_temp double precision,
-    average_temp_uncertainty double precision
+    average_temp_uncertainty double precision,
+    PRIMARY KEY (country_code, dt)
 );"""
 
 currencies_create = """CREATE TABLE IF NOT EXISTS currencies(
-    currency_code text,
+    dt date sortkey,
+    year smallint,
+    currency_code VARCHAR(3) distkey,
     to_dollars numeric(20, 10),
-    dt date
+    PRIMARY KEY (date, currency_code)
 );"""
 
 industries_create = """CREATE TABLE IF NOT EXISTS industries(
-    industry_id text,
+    industry_id VARCHAR(15) PRIMARY KEY,
     description text
 );"""
 
@@ -120,79 +103,84 @@ industries_create = """CREATE TABLE IF NOT EXISTS industries(
 staging_emissions_copy = """
     copy staging_emissions from '{}'
     credentials 'aws_iam_role={}'
-    region '{}';
-""".format(config.get('S3', 'EMISSIONS_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
+    region '{}'
+    delimiter ','
+    ignoreheader 1
+;""".format(config.get('S3', 'EMISSIONS_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
 
 staging_temperatures_copy = """
     copy staging_temperatures from '{}'
     credentials 'aws_iam_role={}'
-    region '{}';
-""".format(config.get('S3', 'TEMPERATURES_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
+    region '{}'
+    delimiter ','
+    ignoreheader 1
+    removequotes
+;""".format(config.get('S3', 'TEMPERATURES_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
 
 staging_industrial_production_copy = """
     copy staging_industrial_production from '{}'
     credentials 'aws_iam_role={}'
-    region '{}';
-""".format(config.get('S3', 'INDUSTRIAL_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
+    region '{}'
+    delimiter ','
+    ignoreheader 1
+    removequotes
+;""".format(config.get('S3', 'INDUSTRIAL_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
 
 staging_currencies_copy = """
     copy staging_currencies from '{}'
     credentials 'aws_iam_role={}'
-    region '{}';
-""".format(config.get('S3', 'CURRENCIES_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
+    region '{}'
+    delimiter ','
+    ignoreheader 1
+    NULL AS 'ND'
+;""".format(config.get('S3', 'CURRENCIES_DATA'), config.get('IAM_ROLE', 'ARN'), config.get('S3', 'REGION'))
 
 
 # --- FINAL TABLES ---
 
 industrial_production_insert = """
-INSERT INTO industrial_production(country_code, industry_id, year, currency_code, value)
+INSERT INTO industrial_production (country_code, industry_id, year, currency_code, value)
     SELECT country_code, industry_id, year, currency_code, value * POWER(10, power_code_code)
     FROM staging_industrial_production
     WHERE value_type_code = 'VALU'
 ;"""
 
 countries_insert = """
-INSERT INTO countries(country_code, year, emissions)
+INSERT INTO countries (country_code, year, emissions)
     SELECT country_code, year, emissions
     FROM staging_emissions
     WHERE country_code IS NOT NULL
         AND country_code != 'OWID_WRL'
+        AND country_code != ' '
 ;"""
 
 temperatures_insert = """
-WITH countries as(
-    SELECT DISTINCT country, country_code 
+INSERT INTO temperatures (country_code, dt, year, average_temp, average_temp_uncertainty) 
+WITH countries AS (
+	SELECT DISTINCT country, country_code 
     FROM staging_emissions
     WHERE country_code IS NOT NULL
         AND country_code != 'OWID_WRL'
+        AND country_code != ' '
 )
-INSERT INTO temperatures(country_code, dt, year, average_temp, average_temp_uncertainty)
-    SELECT c.country_code, t.dt, EXTRACT(y from t.dt), t.avg_temp , t.avg_temp_uncertainty
+SELECT c.country_code, t.dt, EXTRACT(y from t.dt), t.avg_temp, t.avg_temp_uncertainty
     FROM staging_temperatures t
     LEFT JOIN countries c
         ON c.country = t.country
-    WHERE c.country_code IS NOT NULL
+    WHERE country_code IS NOT NULL
+        AND t.dt IS NOT NULL
 ;"""
 
-# unnest solution from:
-# https://stackoverflow.com/questions/1128737/unpivot-and-postgresql
-
-names_array = "['AUD', 'EUR', 'NZD', 'GBP', 'BRL', 'CAD', 'CNY', 'HKD', 'INR', 'KRW', " \
-"'MXN', 'ZAR', 'SGD', 'DKK', 'JPY', 'MYR', 'NOK', 'SEK', 'LKR', 'CHF', 'TWD', 'THB']"
-
-cols_array = "[AUD, EUR, NZD, GBP, BRL, CAD, CNY, HKD, INR, KRW, " \
-"MXN, ZAR, SGD, DKK, JPY, MYR, NOK, SEK, LKR, CHF, TWD, THB]"
-
-currencies_insert = f"""
-INSERT INTO currencies(currency_code, dt, to_dollars)
-    SELECT unnest(array{names_array}),
-           dt,
-           unnest(array{cols_array})
+currencies_insert = """
+INSERT INTO currencies (dt, year, currency_code, to_dollars)
+    SELECT dt, EXTRACT(y from dt), currency_code, value
     FROM staging_currencies
+        WHERE dt IS NOT NULL
+            AND value IS NOT NULL
 ;"""
 
 industries_insert = """
-INSERT INTO industries(industry_id, description)
+INSERT INTO industries (industry_id, description)
     SELECT DISTINCT industry_id, industry
     FROM staging_industrial_production
     WHERE value_type_code = 'VALU'
