@@ -2,11 +2,11 @@
 
 This project was built as the Capstone project of Udacity's Data Engineering Nanodegree. This readme contains the following sections:
 
-- 1. Project Scope
-- 2. Data Sources
-- 3. Data Warehouse design
-- 4. Project structure
-- 5. Further discussion
+1. Project Scope
+2. Data Sources
+3. Data Warehouse design
+4. Project structure
+5. Further discussion
 
 ## 1. Project Scope
 
@@ -19,8 +19,11 @@ Finally, to get the insights, a **Dashboard** tool like Tableau or Power BI coul
 ## 2. Data Sources
 
 [Climate Change: Earth Surface Temperature Data](https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data)
+
 [Annual CO2 emissions per country](https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions#co2-in-the-atmosphere)
+
 [STAN Industrial Analysis](https://stats.oecd.org/Index.aspx?DataSetCode=STANI4_2016)
+
 [Foreign Exchange Rates 2000-2019](https://www.kaggle.com/brunotly/foreign-exchange-rates-per-dollar-20002019)
 
 ### Climate Change: Earth Surface Temperature Data
