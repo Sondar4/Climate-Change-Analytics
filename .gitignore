@@ -1,0 +1,9 @@
+.vscode/
+.ipynb_checkpoints
+
+data/*
+logs/*
+
+# Files
+ToDo.md
+dwh.cfg

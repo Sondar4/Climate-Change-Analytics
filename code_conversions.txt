@@ -1,0 +1,44 @@
+Code    Stani4 Country          Emissions Country
+̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶
+SVK     Slovak Republic	        Slovakia
+DEU     Germany		            Germany
+FIN     Finland		            Finland
+NOR     Norway		            Norway
+CZE     Czech Republic          Czech Republic
+NLD     Netherlands		        Netherlands
+FRA     France		            France
+SWE     Sweden		            Sweden
+SVN     Slovenia		        Slovenia
+AUT     Austria		            Austria
+ITA     Italy		            Italy
+BEL     Belgium		            Belgium
+DNK     Denmark		            Denmark
+PRT     Portugal		        Portugal
+GRC     Greece		            Greece
+LUX     Luxembourg		        Luxembourg
+MEX     Mexico		            Mexico
+ESP     Spain		            Spain
+GBR     United Kingdom	        United Kingdom
+EST     Estonia		            Estonia
+LVA     Latvia		            Latvia
+POL     Poland		            Poland
+USA     United States	        United States
+CHE     Switzerland		        Switzerland
+JPN     Japan		            Japan
+HUN     Hungary		            Hungary
+ISL     Iceland		            Iceland
+ISR     Israel		            Israel
+CHL     Chile		            Chile
+KOR     Korea		            South Korea
+CAN     Canada		            Canada
+IRL     Ireland		            Ireland
+TUR     Turkey		            Turkey
+AUS     Australia		        Australia
+NZL     New Zealand		        New Zealand
+LTU     Lithuania		        Lithuania
+
+̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶
+̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶̶
+
+For currency codes one can check the ISO 4217.
+https://www.iban.com/currency-codes
