@@ -4,7 +4,3 @@ __pycache__
 
 data/*
 logs/*
-
-# Files
-TODO.md
-dwh.cfg

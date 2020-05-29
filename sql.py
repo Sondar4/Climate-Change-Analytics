@@ -90,7 +90,7 @@ currencies_create = """CREATE TABLE IF NOT EXISTS currencies(
     year smallint,
     currency_code VARCHAR(3) distkey,
     to_dollars numeric(20, 10),
-    PRIMARY KEY (date, currency_code)
+    PRIMARY KEY (dt, currency_code)
 );"""
 
 industries_create = """CREATE TABLE IF NOT EXISTS industries(
@@ -151,6 +151,7 @@ INSERT INTO countries (country_code, year, emissions)
     FROM staging_emissions
     WHERE country_code IS NOT NULL
         AND country_code != 'OWID_WRL'
+        AND country_code != 'OWID_CZS'
         AND country_code != ' '
 ;"""
 
@@ -161,6 +162,7 @@ WITH countries AS (
     FROM staging_emissions
     WHERE country_code IS NOT NULL
         AND country_code != 'OWID_WRL'
+        AND country_code != 'OWID_CZS'
         AND country_code != ' '
 )
 SELECT c.country_code, t.dt, EXTRACT(y from t.dt), t.avg_temp, t.avg_temp_uncertainty

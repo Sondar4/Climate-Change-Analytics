@@ -24,15 +24,19 @@ def main():
     try:
         # Get history of all Amazon Redshift load errors
         cur.execute("SELECT * FROM stl_load_errors;")
-        with open(f"logs/errorlog_{ts}.txt", "w") as log:
+        with open(f"logs/errorlog_{ts}.csv", "w") as log:
             for row in cur:
-                log.write(str(row))
+                for col in row:
+                    log.write(f"{str(col)}, ")
+                log.write("\n")
 
         # Get additional details of the loading error
         cur.execute("SELECT * FROM stl_loaderror_detail;")
-        with open(f"logs/detailed_errorlog_{ts}.txt", "w") as log:
+        with open(f"logs/detailed_errorlog_{ts}.csv", "w") as log:
             for row in cur:
-                log.write(str(row))
+                for col in row:
+                    log.write(f"{str(col)}, ")
+                log.write("\n")
         print("Log files written.")
     except Exception as e:
         print("Log files could not be written")
