@@ -1,0 +1,8 @@
+Data quality check on table industrial_production passed with 48061 rows.
+Data quality check on table countries passed with 18247 rows.
+Data quality check on table temperatures passed with 449637 rows.
+Data quality check on table currencies passed with 110415 rows.
+Data quality check on table industries passed with 133 rows.
+Data quality check on table currencies column to_dollars passed, all values are valid.
+Data quality check on table industrial_production JOIN temperatures column country_code passed, all codes match.
+Data quality check on table industries column description passed, all values are valid.
